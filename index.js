@@ -75,6 +75,14 @@ app.get("/guild/:guildId", (req, res) => {
     res.json({ id: guild.id, name: guild.name });
 });
 
+// ----------------------
+// NUEVA API: Servidores donde está el bot
+// ----------------------
+app.get("/api/servers", (req, res) => {
+    const guilds = client.guilds.cache.map(g => g.id);
+    res.json(guilds);
+});
+
 // Puerto
 app.listen(process.env.PORT || 3001, () =>
     console.log("API del bot lista")
