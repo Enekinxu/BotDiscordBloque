@@ -75,15 +75,45 @@ app.get("/guild/:guildId", (req, res) => {
     res.json({ id: guild.id, name: guild.name });
 });
 
-// ----------------------
-// NUEVA API: Servidores donde está el bot
-// ----------------------
+// Servidores donde está el bot
 app.get("/api/servers", (req, res) => {
     const guilds = client.guilds.cache.map(g => g.id);
     res.json(guilds);
 });
 
-// Puerto
+// ----------------------
+// API PARA RECIBIR STREAMERS DESDE EL DASHBOARD
+// ----------------------
+app.post("/api/addStreamer", (req, res) => {
+    const filePath = "./streamers.json";
+
+    let data = [];
+    if (fs.existsSync(filePath)) {
+        data = JSON.parse(fs.readFileSync(filePath));
+    }
+
+    data.push(req.body);
+
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+    res.json({ ok: true, msg: "Streamer guardado en el bot." });
+});
+
+// Función para leer streamers
+function cargarStreamers() {
+    const filePath = "./streamers.json";
+    if (!fs.existsSync(filePath)) return [];
+    return JSON.parse(fs.readFileSync(filePath));
+}
+
+// Ejemplo de función para anunciar (la usarás cuando detectes directos/videos)
+async function anunciarStreamer(streamer) {
+    const canal = client.channels.cache.get(streamer.canal);
+    if (!canal) return;
+    await canal.send(streamer.mensaje);
+}
+
+// Puerto API
 app.listen(process.env.PORT || 3001, () =>
     console.log("API del bot lista")
 );
