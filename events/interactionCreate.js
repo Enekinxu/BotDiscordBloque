@@ -152,7 +152,7 @@ module.exports = {
                     canalLogs.send({
                         embeds: [
                             {
-                                title: "📝 Log de Postulación",
+                                title: "📄 Log de Postulación",
                                 color: 0x3498db,
                                 fields: [
                                     { name: "Usuario", value: interaction.user.tag },
@@ -194,8 +194,8 @@ module.exports = {
 
                 fs.writeFileSync("./postulaciones.json", JSON.stringify(data, null, 4));
 
+                // LOGS
                 const canalLogs = interaction.guild.channels.cache.get("1533020324277387404");
-
                 if (canalLogs) {
                     canalLogs.send({
                         embeds: [
@@ -211,6 +211,27 @@ module.exports = {
                             }
                         ]
                     });
+                }
+
+                // MD AL USUARIO
+                try {
+                    const usuario = await interaction.guild.members.fetch(postulacion.usuario);
+
+                    usuario.send({
+                        embeds: [
+                            {
+                                title: "📢 Actualización de tu Postulación",
+                                color: postulacion.estado === "aceptado" ? 0x00ff00 : 0xff0000,
+                                fields: [
+                                    { name: "Rango solicitado", value: postulacion.rango },
+                                    { name: "Nuevo estado", value: postulacion.estado }
+                                ],
+                                timestamp: new Date()
+                            }
+                        ]
+                    });
+                } catch (err) {
+                    console.log("No se pudo enviar MD al usuario.");
                 }
 
                 return interaction.reply({

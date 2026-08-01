@@ -24,7 +24,6 @@ module.exports = {
 
         const rango = interaction.options.getString("rango");
 
-        // Botón para iniciar la postulación
         const boton = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId(`postular_${rango}`)
