@@ -1,7 +1,5 @@
-const fs = require("fs");
 const {
     SlashCommandBuilder,
-    EmbedBuilder,
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle
@@ -10,7 +8,7 @@ const {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("postulacion")
-        .setDescription("Enviar una postulación eligiendo un rango")
+        .setDescription("Iniciar una postulación")
         .addStringOption(option =>
             option.setName("rango")
                 .setDescription("Rango al que quieres postularte")
@@ -26,77 +24,18 @@ module.exports = {
 
         const rango = interaction.options.getString("rango");
 
-        // Cargar postulaciones
-        let data = [];
-        if (fs.existsSync("./postulaciones.json")) {
-            data = JSON.parse(fs.readFileSync("./postulaciones.json"));
-        }
-
-        // Crear postulación
-        const nuevaPostulacion = {
-            id: Date.now(),
-            usuario: interaction.user.id,
-            usuarioTag: interaction.user.tag,
-            rango,
-            estado: "pendiente",
-            fecha: new Date().toISOString()
-        };
-
-        data.push(nuevaPostulacion);
-
-        fs.writeFileSync("./postulaciones.json", JSON.stringify(data, null, 4));
-
-        // Embed
-        const embed = new EmbedBuilder()
-            .setTitle("📥 Nueva Postulación")
-            .setColor(0x00ff00)
-            .addFields(
-                { name: "👤 Usuario", value: interaction.user.tag },
-                { name: "🎖️ Rango solicitado", value: rango },
-                { name: "📌 Estado", value: "Pendiente" }
-            )
-            .setFooter({ text: `ID: ${nuevaPostulacion.id}` })
-            .setTimestamp();
-
-        // Botones
-        const botones = new ActionRowBuilder().addComponents(
+        // Botón para iniciar la postulación
+        const boton = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setCustomId(`aceptar_${nuevaPostulacion.id}`)
-                .setLabel("Aceptar")
-                .setStyle(ButtonStyle.Success),
-
-            new ButtonBuilder()
-                .setCustomId(`rechazar_${nuevaPostulacion.id}`)
-                .setLabel("Rechazar")
-                .setStyle(ButtonStyle.Danger)
+                .setCustomId(`postular_${rango}`)
+                .setLabel(`Postularse a ${rango}`)
+                .setStyle(ButtonStyle.Primary)
         );
 
-        // Enviar en el canal donde se ejecutó el comando
-        await interaction.channel.send({ embeds: [embed], components: [botones] });
-
-        // Respuesta al usuario
         await interaction.reply({
-            content: `Tu postulación para **${rango}** ha sido enviada.`,
-            ephemeral: true
+            content: `Haz clic para postularte a **${rango}**`,
+            components: [boton],
+            ephemeral: false
         });
-
-        // LOGS AUTOMÁTICOS
-        const canalLogs = interaction.guild.channels.cache.get("ID_DEL_CANAL_DE_LOGS");
-        if (canalLogs) {
-            canalLogs.send({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("📝 Log de Postulación")
-                        .setColor(0x3498db)
-                        .setDescription(`Nueva postulación creada.`)
-                        .addFields(
-                            { name: "Usuario", value: interaction.user.tag },
-                            { name: "Rango", value: rango },
-                            { name: "Estado", value: "Pendiente" }
-                        )
-                        .setTimestamp()
-                ]
-            });
-        }
     }
 };
