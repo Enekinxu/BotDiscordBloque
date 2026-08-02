@@ -139,14 +139,23 @@ module.exports = {
                         .setStyle(ButtonStyle.Danger)
                 );
 
-                await interaction.channel.send({ embeds: [embed], components: [botones] });
+                // ----------------------
+                // ENVIAR AL CANAL DE POSTULACIONES
+                // ----------------------
+                const canalPostulaciones = interaction.guild.channels.cache.get("1533477230838157332");
+
+                if (canalPostulaciones) {
+                    await canalPostulaciones.send({ embeds: [embed], components: [botones] });
+                }
 
                 await interaction.reply({
                     content: "Tu postulación ha sido enviada correctamente.",
                     ephemeral: true
                 });
 
+                // ----------------------
                 // LOGS
+                // ----------------------
                 const canalLogs = interaction.guild.channels.cache.get("1533020324277387404");
                 if (canalLogs) {
                     canalLogs.send({
