@@ -343,7 +343,7 @@ module.exports = {
                         .setStyle(ButtonStyle.Danger)
                 );
 
-                const canalPostulaciones = interaction.guild.channels.cache.get("1533477230838157332");
+                const canalPostulaciones = interaction.guild.channels.cache.get("ID_DEL_CANAL_DE_POSTULACIONES");
                 if (canalPostulaciones) {
                     await canalPostulaciones.send({ embeds: [embed], components: [botones] });
                 }
@@ -353,7 +353,7 @@ module.exports = {
                     ephemeral: true
                 });
 
-                const canalLogs = interaction.guild.channels.cache.get("1533020324277387404");
+                const canalLogs = interaction.guild.channels.cache.get("ID_DEL_CANAL_DE_LOGS");
                 if (canalLogs) {
                     canalLogs.send({
                         embeds: [
@@ -400,7 +400,7 @@ module.exports = {
 
                 fs.writeFileSync("./postulaciones.json", JSON.stringify(data, null, 4));
 
-                const canalLogs = interaction.guild.channels.cache.get("1533020324277387404");
+                const canalLogs = interaction.guild.channels.cache.get("ID_DEL_CANAL_DE_LOGS");
                 if (canalLogs) {
                     canalLogs.send({
                         embeds: [
@@ -482,4 +482,12 @@ module.exports = {
                 if (!data.participantes.includes(interaction.user.id)) {
                     data.participantes.push(interaction.user.id);
                     return interaction.reply({
-                        content:
+                        content: "✅ Postulación enviada.",
+                        ephemeral: true
+                    });
+                } else {
+                    return interaction.reply({
+                        content: "❌ Tu postulación ya ha sido enviada.",
+                        ephemeral: true
+                    });
+                }
