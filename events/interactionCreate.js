@@ -316,65 +316,114 @@ module.exports = {
                 fs.writeFileSync("./postulaciones.json", JSON.stringify(data, null, 4));
 
                 // ----------------------
-                // EMBED PROFESIONAL
+                // EMBEDS PROFESIONALES
                 // ----------------------
-const embeds = [
-    {
-        title: "📄 Información básica",
-        color: 0x00ff00,
-        fields: [
-            { name: "Nick Discord", value: temp.nick_discord },
-            { name: "Nick Minecraft", value: temp.nick_minecraft },
-            { name: "Edad", value: temp.edad },
-            { name: "Premium", value: temp.premium },
-            { name: "¿Has sido sancionado?", value: temp.sancionado }
-        ],
-        timestamp: new Date()
-    },
-    {
-        title: "🔐 Seguridad",
-        color: 0x00ff00,
-        fields: [
-            { name: "Acceso a cuentas", value: temp.acceso },
-            { name: "Zona horaria", value: temp.zona },
-            { name: "Micrófono", value: temp.microfono },
-            { name: "Horas semanales", value: temp.horas }
-        ],
-        timestamp: new Date()
-    },
-    {
-        title: "🛡 Experiencia",
-        color: 0x00ff00,
-        fields: [
-            { name: "Experiencia staff", value: temp.experiencia_staff.slice(0, 1020) },
-            { name: "Idiomas", value: temp.idiomas },
-            { name: "Experiencia SS", value: temp.ss },
-            { name: "Flood vs Spam", value: temp.flood_spam }
-        ],
-        timestamp: new Date()
-    },
-    {
-        title: "⚠ Situaciones",
-        color: 0x00ff00,
-        fields: [
-            { name: "Staff corrupto", value: temp.staff_corrupto.slice(0, 1020) },
-            { name: "xRayer", value: temp.xrayer.slice(0, 1020) }
-        ],
-        timestamp: new Date()
-    },
-    {
-        title: "💬 Personal",
-        color: 0x00ff00,
-        fields: [
-            { name: "Fortalezas/debilidades", value: temp.fortalezas.slice(0, 1020) },
-            { name: "Razón para ser staff", value: temp.razon_staff.slice(0, 1020) },
-            { name: "¿Por qué tú?", value: temp.escogerte.slice(0, 1020) },
-            { name: "Extra", value: temp.extra || "N/A" }
-        ],
-        footer: { text: `ID: ${temp.id}` },
-        timestamp: new Date()
-    }
-];
+                const embeds = [
+                    {
+                        title: "📄 Información básica",
+                        color: 0x00ff00,
+                        fields: [
+                            { name: "Nick Discord", value: temp.nick_discord },
+                            { name: "Nick Minecraft", value: temp.nick_minecraft },
+                            { name: "Edad", value: temp.edad },
+                            { name: "Premium", value: temp.premium },
+                            { name: "¿Has sido sancionado?", value: temp.sancionado }
+                        ],
+                        timestamp: new Date()
+                    },
+                    {
+                        title: "🔐 Seguridad",
+                        color: 0x00ff00,
+                        fields: [
+                            { name: "Acceso a cuentas", value: temp.acceso },
+                            { name: "Zona horaria", value: temp.zona },
+                            { name: "Micrófono", value: temp.microfono },
+                            { name: "Horas semanales", value: temp.horas }
+                        ],
+                        timestamp: new Date()
+                    },
+                    {
+                        title: "🛡 Experiencia",
+                        color: 0x00ff00,
+                        fields: [
+                            { name: "Experiencia staff", value: temp.experiencia_staff.slice(0, 1020) },
+                            { name: "Idiomas", value: temp.idiomas },
+                            { name: "Experiencia SS", value: temp.ss },
+                            { name: "Flood vs Spam", value: temp.flood_spam }
+                        ],
+                        timestamp: new Date()
+                    },
+                    {
+                        title: "⚠ Situaciones",
+                        color: 0x00ff00,
+                        fields: [
+                            { name: "Staff corrupto", value: temp.staff_corrupto.slice(0, 1020) },
+                            { name: "xRayer", value: temp.xrayer.slice(0, 1020) }
+                        ],
+                        timestamp: new Date()
+                    },
+                    {
+                        title: "💬 Personal",
+                        color: 0x00ff00,
+                        fields: [
+                            { name: "Fortalezas/debilidades", value: temp.fortalezas.slice(0, 1020) },
+                            { name: "Razón para ser staff", value: temp.razon_staff.slice(0, 1020) },
+                            { name: "¿Por qué tú?", value: temp.escogerte.slice(0, 1020) },
+                            { name: "Extra", value: temp.extra || "N/A" }
+                        ],
+                        footer: { text: `ID: ${temp.id}` },
+                        timestamp: new Date()
+                    }
+                ];
+
+                const {
+                    ActionRowBuilder,
+                    ButtonBuilder,
+                    ButtonStyle
+                } = require("discord.js");
+
+                const botones = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`aceptar_${temp.id}`)
+                        .setLabel("Aceptar")
+                        .setStyle(ButtonStyle.Success),
+                    new ButtonBuilder()
+                        .setCustomId(`rechazar_${temp.id}`)
+                        .setLabel("Rechazar")
+                        .setStyle(ButtonStyle.Danger)
+                );
+
+                const canalPostulaciones = interaction.guild.channels.cache.get("1533477230838157332");
+                if (canalPostulaciones) {
+                    await canalPostulaciones.send({ embeds, components: [botones] });
+                }
+
+                await interaction.reply({
+                    content: "Tu postulación ha sido enviada correctamente.",
+                    ephemeral: true
+                });
+
+                const canalLogs = interaction.guild.channels.cache.get("1533020324277387404");
+                if (canalLogs) {
+                    canalLogs.send({
+                        embeds: [
+                            {
+                                title: "📄 Log de Postulación",
+                                color: 0x3498db,
+                                fields: [
+                                    { name: "Usuario", value: interaction.user.tag },
+                                    { name: "Rango", value: rango },
+                                    { name: "Estado", value: "Pendiente" }
+                                ],
+                                timestamp: new Date()
+                            }
+                        ]
+                    });
+                }
+
+                return;
+            }
+        }
 
         // ----------------------
         // BOTONES DE ACEPTAR / RECHAZAR
@@ -464,48 +513,7 @@ const embeds = [
             }
 
             if (interaction.customId === "reclamar_ticket") {
-                return interaction.reply({
-                    content: `🎟️ Ticket reclamado por ${interaction.user}.`,
-                    ephemeral: false
-                });
-            }
-        }
-         // ----------------------
-        // BOTONES DE SORTEOS
-        // ----------------------
-        if (interaction.isButton()) {
-
-            const data = sorteos.obtener(interaction.message.id);
-            if (!data) return;
-
-            if (interaction.customId === "participar") {
-                if (!data.participantes.includes(interaction.user.id)) {
-                    data.participantes.push(interaction.user.id);
-                    return interaction.reply({
-                        content: "¡Participación registrada! 🎉",
-                        ephemeral: true
-                    });
-                }
-                return interaction.reply({
-                    content: "Ya estás participando.",
-                    ephemeral: true
-                });
-            }
-
-            if (interaction.customId === "finalizar") {
-                if (!interaction.member.permissions.has("Administrator")) {
-                    return interaction.reply({
-                        content: "❌ No tienes permisos para finalizar el sorteo.",
-                        ephemeral: true
-                    });
-                }
-
-                await sorteos.finalizar(interaction.guild, interaction.message, data);
-
-                return interaction.reply({
-                    content: "Sorteo finalizado manualmente.",
-                    ephemeral: true
-                });
+                return sistemaTickets.reclamarTicket(interaction);
             }
         }
     }
