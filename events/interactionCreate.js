@@ -318,102 +318,63 @@ module.exports = {
                 // ----------------------
                 // EMBED PROFESIONAL
                 // ----------------------
-                const embed = {
-                    title: "📥 Nueva Postulación",
-                    color: 0x00ff00,
-                    fields: [
-                        {
-                            name: "📄 Información básica",
-                            value:
-                                `**Nick Discord:** ${temp.nick_discord}\n` +
-                                `**Nick Minecraft:** ${temp.nick_minecraft}\n` +
-                                `**Edad:** ${temp.edad}\n` +
-                                `**Premium:** ${temp.premium}\n` +
-                                `**¿Has sido sancionado?:** ${temp.sancionado}`
-                        },
-                        {
-                            name: "🔐 Seguridad",
-                            value:
-                                `**Acceso a cuentas:** ${temp.acceso}\n` +
-                                `**Zona horaria:** ${temp.zona}\n` +
-                                `**Micrófono:** ${temp.microfono}\n` +
-                                `**Horas semanales:** ${temp.horas}`
-                        },
-                        {
-                            name: "🛡 Experiencia",
-                            value:
-                                `**Experiencia staff:** ${temp.experiencia_staff}\n` +
-                                `**Idiomas:** ${temp.idiomas}\n` +
-                                `**Experiencia SS:** ${temp.ss}\n` +
-                                `**Flood vs Spam:** ${temp.flood_spam}`
-                        },
-                        {
-                            name: "⚠ Situaciones",
-                            value:
-                                `**Staff corrupto:** ${temp.staff_corrupto}\n` +
-                                `**xRayer:** ${temp.xrayer}`
-                        },
-                        {
-                            name: "💬 Personal",
-                            value:
-                                `**Fortalezas/debilidades:** ${temp.fortalezas}\n` +
-                                `**Razón para ser staff:** ${temp.razon_staff}\n` +
-                                `**¿Por qué tú?:** ${temp.escogerte}\n` +
-                                `**Extra:** ${temp.extra || "N/A"}`
-                        }
-                    ],
-                    footer: { text: `ID: ${temp.id}` },
-                    timestamp: new Date()
-                };
-
-                const {
-                    ActionRowBuilder,
-                    ButtonBuilder,
-                    ButtonStyle
-                } = require("discord.js");
-
-                const botones = new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(`aceptar_${temp.id}`)
-                        .setLabel("Aceptar")
-                        .setStyle(ButtonStyle.Success),
-                    new ButtonBuilder()
-                        .setCustomId(`rechazar_${temp.id}`)
-                        .setLabel("Rechazar")
-                        .setStyle(ButtonStyle.Danger)
-                );
-
-                const canalPostulaciones = interaction.guild.channels.cache.get("1533477230838157332");
-                if (canalPostulaciones) {
-                    await canalPostulaciones.send({ embeds: [embed], components: [botones] });
-                }
-
-                await interaction.reply({
-                    content: "Tu postulación ha sido enviada correctamente.",
-                    ephemeral: true
-                });
-
-                const canalLogs = interaction.guild.channels.cache.get("1533020324277387404");
-                if (canalLogs) {
-                    canalLogs.send({
-                        embeds: [
-                            {
-                                title: "📄 Log de Postulación",
-                                color: 0x3498db,
-                                fields: [
-                                    { name: "Usuario", value: interaction.user.tag },
-                                    { name: "Rango", value: rango },
-                                    { name: "Estado", value: "Pendiente" }
-                                ],
-                                timestamp: new Date()
-                            }
-                        ]
-                    });
-                }
-
-                return;
-            }
-        }
+const embeds = [
+    {
+        title: "📄 Información básica",
+        color: 0x00ff00,
+        fields: [
+            { name: "Nick Discord", value: temp.nick_discord },
+            { name: "Nick Minecraft", value: temp.nick_minecraft },
+            { name: "Edad", value: temp.edad },
+            { name: "Premium", value: temp.premium },
+            { name: "¿Has sido sancionado?", value: temp.sancionado }
+        ],
+        timestamp: new Date()
+    },
+    {
+        title: "🔐 Seguridad",
+        color: 0x00ff00,
+        fields: [
+            { name: "Acceso a cuentas", value: temp.acceso },
+            { name: "Zona horaria", value: temp.zona },
+            { name: "Micrófono", value: temp.microfono },
+            { name: "Horas semanales", value: temp.horas }
+        ],
+        timestamp: new Date()
+    },
+    {
+        title: "🛡 Experiencia",
+        color: 0x00ff00,
+        fields: [
+            { name: "Experiencia staff", value: temp.experiencia_staff.slice(0, 1020) },
+            { name: "Idiomas", value: temp.idiomas },
+            { name: "Experiencia SS", value: temp.ss },
+            { name: "Flood vs Spam", value: temp.flood_spam }
+        ],
+        timestamp: new Date()
+    },
+    {
+        title: "⚠ Situaciones",
+        color: 0x00ff00,
+        fields: [
+            { name: "Staff corrupto", value: temp.staff_corrupto.slice(0, 1020) },
+            { name: "xRayer", value: temp.xrayer.slice(0, 1020) }
+        ],
+        timestamp: new Date()
+    },
+    {
+        title: "💬 Personal",
+        color: 0x00ff00,
+        fields: [
+            { name: "Fortalezas/debilidades", value: temp.fortalezas.slice(0, 1020) },
+            { name: "Razón para ser staff", value: temp.razon_staff.slice(0, 1020) },
+            { name: "¿Por qué tú?", value: temp.escogerte.slice(0, 1020) },
+            { name: "Extra", value: temp.extra || "N/A" }
+        ],
+        footer: { text: `ID: ${temp.id}` },
+        timestamp: new Date()
+    }
+];
 
         // ----------------------
         // BOTONES DE ACEPTAR / RECHAZAR
@@ -509,7 +470,7 @@ module.exports = {
                 });
             }
         }
-        // ----------------------
+         // ----------------------
         // BOTONES DE SORTEOS
         // ----------------------
         if (interaction.isButton()) {
