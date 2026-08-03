@@ -37,42 +37,42 @@ module.exports = {
                     .setCustomId(`form1_${rango}`)
                     .setTitle(`Postulación (1/4)`);
 
-                const p1 = new TextInputBuilder()
-                    .setCustomId("nick_discord")
-                    .setLabel("1. ¿Cuál es tu nick de Discord?")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                const p2 = new TextInputBuilder()
-                    .setCustomId("nick_minecraft")
-                    .setLabel("2. ¿Cuál es tu nick de Minecraft?")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                const p3 = new TextInputBuilder()
-                    .setCustomId("sancionado")
-                    .setLabel("3. ¿Has sido sancionado antes?")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                const p4 = new TextInputBuilder()
-                    .setCustomId("edad")
-                    .setLabel("4. ¿Cuántos años tienes?")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                const p5 = new TextInputBuilder()
-                    .setCustomId("premium")
-                    .setLabel("5. ¿Eres Premium o No-Premium?")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
                 modal.addComponents(
-                    new ActionRowBuilder().addComponents(p1),
-                    new ActionRowBuilder().addComponents(p2),
-                    new ActionRowBuilder().addComponents(p3),
-                    new ActionRowBuilder().addComponents(p4),
-                    new ActionRowBuilder().addComponents(p5)
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("nick_discord")
+                            .setLabel("1. ¿Cuál es tu nick de Discord?")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("nick_minecraft")
+                            .setLabel("2. ¿Cuál es tu nick de Minecraft?")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("sancionado")
+                            .setLabel("3. ¿Has sido sancionado antes?")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("edad")
+                            .setLabel("4. ¿Cuántos años tienes?")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("premium")
+                            .setLabel("5. ¿Eres Premium o No-Premium?")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    )
                 );
 
                 return interaction.showModal(modal);
@@ -111,42 +111,42 @@ module.exports = {
                     .setCustomId(`form2_${rango}`)
                     .setTitle(`Postulación (2/4)`);
 
-                const p6 = new TextInputBuilder()
-                    .setCustomId("acceso")
-                    .setLabel("6. ¿Alguien más tiene acceso a tus cuentas?")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                const p7 = new TextInputBuilder()
-                    .setCustomId("zona")
-                    .setLabel("7. ¿Cuál es tu zona horaria?")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                const p8 = new TextInputBuilder()
-                    .setCustomId("microfono")
-                    .setLabel("8. ¿Tienes buen micrófono?")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                const p9 = new TextInputBuilder()
-                    .setCustomId("horas")
-                    .setLabel("9. ¿Cuántas horas semanales puedes dedicar?")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                const p10 = new TextInputBuilder()
-                    .setCustomId("experiencia_staff")
-                    .setLabel("10. ¿Experiencia como staff?")
-                    .setStyle(TextInputStyle.Paragraph)
-                    .setRequired(true);
-
                 modal.addComponents(
-                    new ActionRowBuilder().addComponents(p6),
-                    new ActionRowBuilder().addComponents(p7),
-                    new ActionRowBuilder().addComponents(p8),
-                    new ActionRowBuilder().addComponents(p9),
-                    new ActionRowBuilder().addComponents(p10)
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("acceso")
+                            .setLabel("6. ¿Alguien más tiene acceso a tus cuentas?")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("zona")
+                            .setLabel("7. ¿Cuál es tu zona horaria?")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("microfono")
+                            .setLabel("8. ¿Tienes buen micrófono?")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("horas")
+                            .setLabel("9. ¿Cuántas horas semanales puedes dedicar?")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("experiencia_staff")
+                            .setLabel("10. ¿Experiencia como staff?")
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setRequired(true)
+                    )
                 );
 
                 return interaction.showModal(modal);
@@ -181,42 +181,42 @@ module.exports = {
                     .setCustomId(`form3_${rango}`)
                     .setTitle(`Postulación (3/4)`);
 
-                const p11 = new TextInputBuilder()
-                    .setCustomId("idiomas")
-                    .setLabel("11. ¿Qué idiomas sabes?")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                const p12 = new TextInputBuilder()
-                    .setCustomId("ss")
-                    .setLabel("12. Experiencia en SS y nota del 1–10")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                const p13 = new TextInputBuilder()
-                    .setCustomId("flood_spam")
-                    .setLabel("13. Diferencia entre Flood y Spam")
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                const p14 = new TextInputBuilder()
-                    .setCustomId("staff_corrupto")
-                    .setLabel("14. ¿Qué harías si ves un staff corrupto?")
-                    .setStyle(TextInputStyle.Paragraph)
-                    .setRequired(true);
-
-                const p15 = new TextInputBuilder()
-                    .setCustomId("xrayer")
-                    .setLabel("15. ¿Qué harías si encuentras un xRayer?")
-                    .setStyle(TextInputStyle.Paragraph)
-                    .setRequired(true);
-
                 modal.addComponents(
-                    new ActionRowBuilder().addComponents(p11),
-                    new ActionRowBuilder().addComponents(p12),
-                    new ActionRowBuilder().addComponents(p13),
-                    new ActionRowBuilder().addComponents(p14),
-                    new ActionRowBuilder().addComponents(p15)
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("idiomas")
+                            .setLabel("11. ¿Qué idiomas sabes?")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("ss")
+                            .setLabel("12. Experiencia en SS y nota del 1–10")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("flood_spam")
+                            .setLabel("13. Diferencia entre Flood y Spam")
+                            .setStyle(TextInputStyle.Short)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("staff_corrupto")
+                            .setLabel("14. ¿Qué harías si ves un staff corrupto?")
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("xrayer")
+                            .setLabel("15. ¿Qué harías si encuentras un xRayer?")
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setRequired(true)
+                    )
                 );
 
                 return interaction.showModal(modal);
@@ -251,35 +251,35 @@ module.exports = {
                     .setCustomId(`form4_${rango}`)
                     .setTitle(`Postulación (4/4)`);
 
-                const p16 = new TextInputBuilder()
-                    .setCustomId("fortalezas")
-                    .setLabel("16. Fortalezas y debilidades")
-                    .setStyle(TextInputStyle.Paragraph)
-                    .setRequired(true);
-
-                const p17 = new TextInputBuilder()
-                    .setCustomId("razon_staff")
-                    .setLabel("17. ¿Por qué quieres ser staff?")
-                    .setStyle(TextInputStyle.Paragraph)
-                    .setRequired(true);
-
-                const p18 = new TextInputBuilder()
-                    .setCustomId("escogerte")
-                    .setLabel("18. ¿Por qué deberíamos escogerte?")
-                    .setStyle(TextInputStyle.Paragraph)
-                    .setRequired(true);
-
-                const p19 = new TextInputBuilder()
-                    .setCustomId("extra")
-                    .setLabel("19. Algo que quieras agregar")
-                    .setStyle(TextInputStyle.Paragraph)
-                    .setRequired(false);
-
                 modal.addComponents(
-                    new ActionRowBuilder().addComponents(p16),
-                    new ActionRowBuilder().addComponents(p17),
-                    new ActionRowBuilder().addComponents(p18),
-                    new ActionRowBuilder().addComponents(p19)
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("fortalezas")
+                            .setLabel("16. Fortalezas y debilidades")
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("razon_staff")
+                            .setLabel("17. ¿Por qué quieres ser staff?")
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("escogerte")
+                            .setLabel("18. ¿Por qué deberíamos escogerte?")
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId("extra")
+                            .setLabel("19. Algo que quieras agregar")
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setRequired(false)
+                    )
                 );
 
                 return interaction.showModal(modal);
@@ -315,13 +315,53 @@ module.exports = {
                 data.push(temp);
                 fs.writeFileSync("./postulaciones.json", JSON.stringify(data, null, 4));
 
+                // ----------------------
+                // EMBED PROFESIONAL
+                // ----------------------
                 const embed = {
                     title: "📥 Nueva Postulación",
                     color: 0x00ff00,
-                    fields: Object.keys(temp).map(k => ({
-                        name: k,
-                        value: String(temp[k])
-                    })),
+                    fields: [
+                        {
+                            name: "📄 Información básica",
+                            value:
+                                `**Nick Discord:** ${temp.nick_discord}\n` +
+                                `**Nick Minecraft:** ${temp.nick_minecraft}\n` +
+                                `**Edad:** ${temp.edad}\n` +
+                                `**Premium:** ${temp.premium}\n` +
+                                `**¿Has sido sancionado?:** ${temp.sancionado}`
+                        },
+                        {
+                            name: "🔐 Seguridad",
+                            value:
+                                `**Acceso a cuentas:** ${temp.acceso}\n` +
+                                `**Zona horaria:** ${temp.zona}\n` +
+                                `**Micrófono:** ${temp.microfono}\n` +
+                                `**Horas semanales:** ${temp.horas}`
+                        },
+                        {
+                            name: "🛡 Experiencia",
+                            value:
+                                `**Experiencia staff:** ${temp.experiencia_staff}\n` +
+                                `**Idiomas:** ${temp.idiomas}\n` +
+                                `**Experiencia SS:** ${temp.ss}\n` +
+                                `**Flood vs Spam:** ${temp.flood_spam}`
+                        },
+                        {
+                            name: "⚠ Situaciones",
+                            value:
+                                `**Staff corrupto:** ${temp.staff_corrupto}\n` +
+                                `**xRayer:** ${temp.xrayer}`
+                        },
+                        {
+                            name: "💬 Personal",
+                            value:
+                                `**Fortalezas/debilidades:** ${temp.fortalezas}\n` +
+                                `**Razón para ser staff:** ${temp.razon_staff}\n` +
+                                `**¿Por qué tú?:** ${temp.escogerte}\n` +
+                                `**Extra:** ${temp.extra || "N/A"}`
+                        }
+                    ],
                     footer: { text: `ID: ${temp.id}` },
                     timestamp: new Date()
                 };
@@ -343,7 +383,7 @@ module.exports = {
                         .setStyle(ButtonStyle.Danger)
                 );
 
-                const canalPostulaciones = interaction.guild.channels.cache.get("ID_DEL_CANAL_DE_POSTULACIONES");
+                const canalPostulaciones = interaction.guild.channels.cache.get("1533477230838157332");
                 if (canalPostulaciones) {
                     await canalPostulaciones.send({ embeds: [embed], components: [botones] });
                 }
@@ -353,7 +393,7 @@ module.exports = {
                     ephemeral: true
                 });
 
-                const canalLogs = interaction.guild.channels.cache.get("ID_DEL_CANAL_DE_LOGS");
+                const canalLogs = interaction.guild.channels.cache.get("1533020324277387404");
                 if (canalLogs) {
                     canalLogs.send({
                         embeds: [
@@ -400,7 +440,7 @@ module.exports = {
 
                 fs.writeFileSync("./postulaciones.json", JSON.stringify(data, null, 4));
 
-                const canalLogs = interaction.guild.channels.cache.get("ID_DEL_CANAL_DE_LOGS");
+                const canalLogs = interaction.guild.channels.cache.get("1533020324277387404");
                 if (canalLogs) {
                     canalLogs.send({
                         embeds: [
@@ -469,7 +509,6 @@ module.exports = {
                 });
             }
         }
-
         // ----------------------
         // BOTONES DE SORTEOS
         // ----------------------
@@ -482,10 +521,30 @@ module.exports = {
                 if (!data.participantes.includes(interaction.user.id)) {
                     data.participantes.push(interaction.user.id);
                     return interaction.reply({
-                        content: `✅ Has participado en el sorteo.`,
+                        content: "¡Participación registrada! 🎉",
                         ephemeral: true
                     });
                 }
+                return interaction.reply({
+                    content: "Ya estás participando.",
+                    ephemeral: true
+                });
+            }
+
+            if (interaction.customId === "finalizar") {
+                if (!interaction.member.permissions.has("Administrator")) {
+                    return interaction.reply({
+                        content: "❌ No tienes permisos para finalizar el sorteo.",
+                        ephemeral: true
+                    });
+                }
+
+                await sorteos.finalizar(interaction.guild, interaction.message, data);
+
+                return interaction.reply({
+                    content: "Sorteo finalizado manualmente.",
+                    ephemeral: true
+                });
             }
         }
     }
