@@ -482,12 +482,11 @@ module.exports = {
                 if (!data.participantes.includes(interaction.user.id)) {
                     data.participantes.push(interaction.user.id);
                     return interaction.reply({
-                        content: "✅ Postulación enviada.",
-                        ephemeral: true
-                    });
-                } else {
-                    return interaction.reply({
-                        content: "❌ Tu postulación ya ha sido enviada.",
+                        content: `✅ Has participado en el sorteo.`,
                         ephemeral: true
                     });
                 }
+            }
+        }
+    }
+};
