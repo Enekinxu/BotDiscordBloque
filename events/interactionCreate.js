@@ -89,38 +89,40 @@ module.exports = {
             const dmChannel = await interaction.user.createDM();
             let index = 1;
 
-            dmChannel.send(`✏️ **Pregunta 1:**\n${preguntas[0]}`);
+            // Función que envía la siguiente pregunta
+            async function preguntarSiguiente() {
 
-            const collector = dmChannel.createMessageCollector({
-                filter: m => m.author.id === interaction.user.id,
-                time: 600000 // 10 min
-            });
-
-const collector = dmChannel.createMessageCollector({
-    filter: m => m.author.id === interaction.user.id,
-    time: 600000
-});
-
-collector.on("collect", msg => {
-    let data = JSON.parse(fs.readFileSync(archivo));
-    data[index] = msg.content;
-    fs.writeFileSync(archivo, JSON.stringify(data, null, 4));
-
-    index++;
-
-    if (index <= preguntas.length) {
-        dmChannel.send(`✏️ **Pregunta ${index}:**\n${preguntas[index - 1]}`);
-    } else {
-        collector.stop("completado");
-    }
-});
-
-            collector.on("end", async (_, reason) => {
-
-                if (reason !== "completado") {
-                    return dmChannel.send("⏳ Tiempo agotado. Vuelve a usar /postulacion.");
+                if (index > preguntas.length) {
+                    finalizarPostulacion();
+                    return;
                 }
 
+                await dmChannel.send(`✏️ **Pregunta ${index}:**\n${preguntas[index - 1]}`);
+
+                const collector = dmChannel.createMessageCollector({
+                    filter: m => m.author.id === interaction.user.id,
+                    max: 1,
+                    time: 600000
+                });
+
+                collector.on("collect", msg => {
+                    let data = JSON.parse(fs.readFileSync(archivo));
+                    data[index] = msg.content;
+                    fs.writeFileSync(archivo, JSON.stringify(data, null, 4));
+
+                    index++;
+                    preguntarSiguiente();
+                });
+
+                collector.on("end", (_, reason) => {
+                    if (reason !== "completado" && index <= preguntas.length) {
+                        dmChannel.send("⏳ Tiempo agotado. Vuelve a usar /postulacion.");
+                    }
+                });
+            }
+
+            // Función final
+            async function finalizarPostulacion() {
                 const data = JSON.parse(fs.readFileSync(archivo));
 
                 const embedFinal = new EmbedBuilder()
@@ -143,8 +145,10 @@ collector.on("collect", msg => {
                 fs.unlinkSync(archivo);
 
                 dmChannel.send("✔ Tu postulación ha sido enviada correctamente.");
-            });
+            }
 
+            // Iniciar preguntas
+            preguntarSiguiente();
             return;
         }
 
