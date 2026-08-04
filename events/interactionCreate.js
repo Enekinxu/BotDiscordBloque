@@ -1,7 +1,7 @@
 const fs = require("fs");
 const sistemaTickets = require("../tickets/system.js");
 const sorteos = require("../utils/sorteos.js");
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 
 module.exports = {
     name: "interactionCreate",
@@ -21,7 +21,7 @@ module.exports = {
                 console.error("Error ejecutando comando:", error);
                 return interaction.reply({
                     content: "❌ Ocurrió un error ejecutando el comando.",
-                    flags: 64
+                    ephemeral: true
                 });
             }
         }
@@ -71,13 +71,13 @@ module.exports = {
 
                 await interaction.reply({
                     content: "📬 Te he enviado un mensaje privado con todas las preguntas.",
-                    flags: 64
+                    ephemeral: true
                 });
 
             } catch (err) {
                 return interaction.reply({
                     content: "❌ No puedo enviarte MD. Activa tus mensajes privados.",
-                    flags: 64
+                    ephemeral: true
                 });
             }
 
@@ -114,10 +114,21 @@ module.exports = {
                     preguntarSiguiente();
                 });
 
-                collector.on("end", () => {});
-
+                collector.on("end", (_collected, reason) => {
+                    if (reason === "time") {
+                        if (fs.existsSync(archivo)) fs.unlinkSync(archivo);
+                        dmChannel.send(
+                            "⌛ Tu tiempo para responder se agotó. Vuelve a iniciar la postulación si deseas continuar."
+                        ).catch(() => null);
+                    }
+                });
+            }
             // Función final
             async function finalizarPostulacion() {
+                if (!fs.existsSync(archivo)) {
+                    return dmChannel.send("❌ No se encontró la postulación. Inicia de nuevo.").catch(() => null);
+                }
+
                 const data = JSON.parse(fs.readFileSync(archivo));
 
                 const embedFinal = new EmbedBuilder()
@@ -134,7 +145,15 @@ module.exports = {
                     )
                     .setTimestamp();
 
-                const canal = interaction.guild.channels.cache.get("1533477230838157332");
+                const canal = interaction.guild.channels.cache.get("1533477230838157332")
+                    || await interaction.guild.channels.fetch("1533477230838157332").catch(() => null);
+
+                if (!canal) {
+                    await dmChannel.send("❌ No se pudo entregar la postulación: canal no encontrado.");
+                    if (fs.existsSync(archivo)) fs.unlinkSync(archivo);
+                    return;
+                }
+
                 await canal.send({ embeds: [embedFinal] });
 
                 fs.unlinkSync(archivo);
@@ -174,18 +193,18 @@ module.exports = {
             if (interaction.customId === "participar") {
                 if (!dataSorteo.participantes.includes(interaction.user.id)) {
                     dataSorteo.participantes.push(interaction.user.id);
-                    return interaction.reply({ content: "🎉 Participación registrada.", flags: 64 });
+                    return interaction.reply({ content: "🎉 Participación registrada.", ephemeral: true });
                 }
-                return interaction.reply({ content: "Ya estás participando.", flags: 64 });
+                return interaction.reply({ content: "Ya estás participando.", ephemeral: true });
             }
 
             if (interaction.customId === "finalizar") {
-                if (!interaction.member.permissions.has("Administrator")) {
-                    return interaction.reply({ content: "❌ No tienes permisos.", flags: 64 });
+                if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+                    return interaction.reply({ content: "❌ No tienes permisos.", ephemeral: true });
                 }
 
                 await sorteos.finalizar(interaction.guild, interaction.message, dataSorteo);
-                return interaction.reply({ content: "Sorteo finalizado.", flags: 64 });
+                return interaction.reply({ content: "Sorteo finalizado.", ephemeral: true });
             }
         }
 
