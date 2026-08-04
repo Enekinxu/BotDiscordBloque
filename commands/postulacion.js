@@ -1,32 +1,38 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("postulacion")
-        .setDescription("Iniciar una postulación")
+        .setDescription("Iniciar postulación para un rango del staff")
         .addStringOption(option =>
             option.setName("rango")
-                .setDescription("Rango al que quieres postularte")
+                .setDescription("Rango al que deseas postularte")
                 .setRequired(true)
                 .addChoices(
-                    { name: "Helper", value: "Helper" },
-                    { name: "Moderador", value: "Moderador" },
-                    { name: "Admin", value: "Admin" }
+                    { name: "Helper", value: "helper" },
+                    { name: "Moderador", value: "mod" },
+                    { name: "Builder", value: "builder" }
                 )
         ),
 
     async execute(interaction) {
+
         const rango = interaction.options.getString("rango");
+
+        const embed = new EmbedBuilder()
+            .setTitle(`📋 Postulación para ${rango}`)
+            .setDescription("Pulsa el botón para comenzar tu postulación en mensajes privados.")
+            .setColor("Blue");
 
         const boton = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setCustomId(`postular_${rango}`)
-                .setLabel(`Postularse a ${rango}`)
+                .setCustomId(`postu_start_${rango}`)
+                .setLabel("Comenzar Postulación")
                 .setStyle(ButtonStyle.Primary)
         );
 
         await interaction.reply({
-            content: `Haz clic para postularte a **${rango}**`,
+            embeds: [embed],
             components: [boton]
         });
     }
