@@ -114,6 +114,8 @@ module.exports = {
                     preguntarSiguiente();
                 });
 
+                collector.on("end", () => {});
+
             // Función final
             async function finalizarPostulacion() {
                 const data = JSON.parse(fs.readFileSync(archivo));
