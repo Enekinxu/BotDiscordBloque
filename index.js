@@ -20,9 +20,14 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMembers
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.DirectMessages   // ← NECESARIO PARA RECIBIR MD
     ],
-    partials: [Partials.Channel, Partials.Message, Partials.User]
+    partials: [
+        Partials.Channel,   // ← NECESARIO PARA MD
+        Partials.Message,
+        Partials.User
+    ]
 });
 
 client.commands = new Collection();
@@ -131,7 +136,7 @@ app.listen(process.env.PORT || 3001, () =>
 // ----------------------
 // REGISTRO GLOBAL DE COMANDOS (v14)
 // ----------------------
-client.once("clientReady", async () => {
+client.once("ready", async () => {   // ← ARREGLADO: ANTES TENÍAS "clientReady"
     console.log(`Bot iniciado como ${client.user.tag}`);
 
     try {
