@@ -513,8 +513,22 @@ module.exports = {
             }
 
             if (interaction.customId === "reclamar_ticket") {
-                return sistemaTickets.reclamarTicket(interaction);
+                return interaction.reply({
+                    content: `🎟️ Ticket reclamado por ${interaction.user}.`,
+                    ephemeral: false
+                });
             }
+        }
+
+        // ----------------------
+        // BOTONES DE SORTEOS
+        // ----------------------
+        if (interaction.isButton()) {
+
+            const data = sorteos.obtener(interaction.message.id);
+            if (!data) return;
+
+            // Manejo de los botones de sorteos puede añadirse aquí
         }
     }
 };

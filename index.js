@@ -1,10 +1,19 @@
 require("dotenv").config();
 const fs = require("fs");
 const express = require("express");
-const { Client, GatewayIntentBits, REST, Routes, Collection } = require("discord.js");
+
+// Discord.js v14
+const {
+    Client,
+    GatewayIntentBits,
+    Partials,
+    REST,
+    Routes,
+    Collection
+} = require("discord.js");
 
 // ----------------------
-// CLIENTE DEL BOT
+// CLIENTE DEL BOT (v14)
 // ----------------------
 const client = new Client({
     intents: [
@@ -12,7 +21,8 @@ const client = new Client({
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildMembers
-    ]
+    ],
+    partials: [Partials.Channel, Partials.Message, Partials.User]
 });
 
 client.commands = new Collection();
@@ -106,7 +116,7 @@ function cargarStreamers() {
     return JSON.parse(fs.readFileSync(filePath));
 }
 
-// Ejemplo de función para anunciar (la usarás cuando detectes directos/videos)
+// Ejemplo de función para anunciar
 async function anunciarStreamer(streamer) {
     const canal = client.channels.cache.get(streamer.canal);
     if (!canal) return;
@@ -119,15 +129,18 @@ app.listen(process.env.PORT || 3001, () =>
 );
 
 // ----------------------
-// REGISTRO GLOBAL DE COMANDOS
+// REGISTRO GLOBAL DE COMANDOS (v14)
 // ----------------------
-client.once("ready", async () => {
+client.once("clientReady", async () => {
     console.log(`Bot iniciado como ${client.user.tag}`);
 
     try {
-        await new REST({ version: "10" })
-            .setToken(process.env.TOKEN)
-            .put(Routes.applicationCommands(client.user.id), { body: comandos });
+        const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
+
+        await rest.put(
+            Routes.applicationCommands(client.user.id),
+            { body: comandos }
+        );
 
         console.log("Comandos globales registrados.");
     } catch (error) {

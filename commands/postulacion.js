@@ -1,9 +1,4 @@
-const {
-    SlashCommandBuilder,
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle
-} = require("discord.js");
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -21,7 +16,6 @@ module.exports = {
         ),
 
     async execute(interaction) {
-
         const rango = interaction.options.getString("rango");
 
         const boton = new ActionRowBuilder().addComponents(
@@ -33,8 +27,7 @@ module.exports = {
 
         await interaction.reply({
             content: `Haz clic para postularte a **${rango}**`,
-            components: [boton],
-            ephemeral: false
+            components: [boton]
         });
     }
 };
