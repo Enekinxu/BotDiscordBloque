@@ -24,29 +24,10 @@ module.exports = {
         let estado = JSON.parse(fs.readFileSync(estadoPath));
 
         // ---------------------------------------------------------
-        // SLASH COMMANDS
-        // ---------------------------------------------------------
-        if (interaction.isChatInputCommand()) {
-            const comando = client.commands.get(interaction.commandName);
-            if (!comando) return;
-
-            try {
-                await comando.execute(interaction, client);
-            } catch (error) {
-                console.error("Error ejecutando comando:", error);
-                return interaction.reply({
-                    content: "❌ Ocurrió un error ejecutando el comando.",
-                    ephemeral: true
-                });
-            }
-        }
-
-        // ---------------------------------------------------------
-        // BOTONES PARA ABRIR / CERRAR POSTULACIONES
+        // BOTONES ABRIR / CERRAR POSTULACIONES
         // ---------------------------------------------------------
         if (interaction.isButton()) {
 
-            // CERRAR POSTULACIONES
             if (interaction.customId === "cerrar_postulaciones") {
                 estado.abiertas = false;
                 fs.writeFileSync(estadoPath, JSON.stringify(estado, null, 4));
@@ -57,12 +38,10 @@ module.exports = {
                 });
             }
 
-            // ABRIR POSTULACIONES
             if (interaction.customId === "abrir_postulaciones") {
                 estado.abiertas = true;
                 fs.writeFileSync(estadoPath, JSON.stringify(estado, null, 4));
 
-                // BORRAR REGISTRO DE USUARIOS QUE YA POSTULARON
                 const registroPath = "./postulados.json";
                 if (fs.existsSync(registroPath)) fs.unlinkSync(registroPath);
 
@@ -74,11 +53,10 @@ module.exports = {
         }
 
         // ---------------------------------------------------------
-        // BOTÓN PARA EMPEZAR POSTULACIÓN (MD)
+        // BOTÓN PARA EMPEZAR POSTULACIÓN
         // ---------------------------------------------------------
         if (interaction.isButton() && interaction.customId.startsWith("postu_start_")) {
 
-            // Si las postulaciones están cerradas → bloquear
             if (!estado.abiertas) {
                 return interaction.reply({
                     content: "❌ Las postulaciones están cerradas actualmente.",
@@ -88,9 +66,6 @@ module.exports = {
 
             const rango = interaction.customId.split("_")[2];
 
-            // -------------------------------
-            // EVITAR QUE UN USUARIO POSTULE DOS VECES
-            // -------------------------------
             const registroPath = "./postulados.json";
             let registrados = [];
 
@@ -105,13 +80,9 @@ module.exports = {
                 });
             }
 
-            // Guardar usuario como ya postulado
             registrados.push(interaction.user.id);
             fs.writeFileSync(registroPath, JSON.stringify(registrados, null, 4));
 
-            // -------------------------------
-            // PREGUNTAS
-            // -------------------------------
             const preguntas = [
                 "1. ¿Cuál es tu nick de Discord?",
                 "2. ¿Cuál es tu nick de Minecraft?",
@@ -134,7 +105,6 @@ module.exports = {
                 "19. Algo que quieras agregar"
             ];
 
-            // Intentar enviar MD
             try {
                 await interaction.user.send({
                     embeds: [
@@ -160,15 +130,12 @@ module.exports = {
                 });
             }
 
-            // Crear archivo temporal
             const archivo = `./postu_${interaction.user.id}.json`;
             fs.writeFileSync(archivo, JSON.stringify({ rango }, null, 4));
 
-            // Collector en MD
             const dmChannel = await interaction.user.createDM();
             let index = 1;
 
-            // Función que envía la siguiente pregunta
             async function preguntarSiguiente() {
 
                 if (index > preguntas.length) {
@@ -185,6 +152,44 @@ module.exports = {
                 });
 
                 collector.on("collect", msg => {
+
+                    const respuesta = msg.content.toLowerCase().trim();
+
+                    // -------------------------------
+                    // ANTI-RESPUESTAS BASURA
+                    // -------------------------------
+
+                    // Demasiado corta
+                    if (respuesta.length < 3) {
+                        return dmChannel.send("❌ Esa respuesta no es válida. Responde correctamente.")
+                            .catch(() => null);
+                    }
+
+                    // Solo consonantes
+                    if (/^[bcdfghjklmnpqrstvwxyz]+$/i.test(respuesta)) {
+                        return dmChannel.send("❌ Esa respuesta no es válida. Responde correctamente.")
+                            .catch(() => null);
+                    }
+
+                    // Solo vocales
+                    if (/^[aeiou]+$/i.test(respuesta)) {
+                        return dmChannel.send("❌ Esa respuesta no es válida. Responde correctamente.")
+                            .catch(() => null);
+                    }
+
+                    // Teclado smash sin espacios
+                    if (respuesta.length > 10 && !respuesta.includes(" ")) {
+                        return dmChannel.send("❌ Esa respuesta no es válida. Responde correctamente.")
+                            .catch(() => null);
+                    }
+
+                    // Caracteres raros
+                    if (!/^[a-zA-Záéíóúñ\s]+$/.test(respuesta)) {
+                        return dmChannel.send("❌ Esa respuesta no es válida. Responde correctamente.")
+                            .catch(() => null);
+                    }
+
+                    // Guardar respuesta válida
                     let data = JSON.parse(fs.readFileSync(archivo));
                     data[index] = msg.content;
                     fs.writeFileSync(archivo, JSON.stringify(data, null, 4));
@@ -196,8 +201,8 @@ module.exports = {
                 collector.on("end", () => {});
             }
 
-            // Función final
             async function finalizarPostulacion() {
+
                 if (!fs.existsSync(archivo)) {
                     return dmChannel.send("❌ No se encontró la postulación. Inicia de nuevo.").catch(() => null);
                 }
@@ -227,7 +232,6 @@ module.exports = {
                     return;
                 }
 
-                // BOTONES ACEPTAR / RECHAZAR
                 const botones = new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
                         .setCustomId(`aceptar_${interaction.user.id}`)
@@ -250,7 +254,6 @@ module.exports = {
                 dmChannel.send("✔ Tu postulación ha sido enviada correctamente.");
             }
 
-            // Iniciar preguntas
             preguntarSiguiente();
             return;
         }
@@ -260,16 +263,13 @@ module.exports = {
         // ---------------------------------------------------------
         if (interaction.isButton()) {
 
-            // ACEPTAR
             if (interaction.customId.startsWith("aceptar_")) {
                 const userId = interaction.customId.split("_")[1];
 
                 try {
                     const usuario = await interaction.guild.members.fetch(userId);
-                    await usuario.send("📢 Tu postulación ha sido **aceptada**. ¡Bienvenido al staff!");
-                } catch (err) {
-                    console.log("No se pudo enviar MD al usuario aceptado.");
-                }
+                    await usuario.send("📢 Tu postulación ha sido **aceptada**. ¡Bienvenido al equipo!");
+                } catch {}
 
                 return interaction.reply({
                     content: "✔ Acción realizada.",
@@ -277,16 +277,13 @@ module.exports = {
                 });
             }
 
-            // RECHAZAR
             if (interaction.customId.startsWith("rechazar_")) {
                 const userId = interaction.customId.split("_")[1];
 
                 try {
                     const usuario = await interaction.guild.members.fetch(userId);
                     await usuario.send("📢 Tu postulación ha sido **rechazada**. Gracias por participar.");
-                } catch (err) {
-                    console.log("No se pudo enviar MD al usuario rechazado.");
-                }
+                } catch {}
 
                 return interaction.reply({
                     content: "✔ Acción realizada.",
