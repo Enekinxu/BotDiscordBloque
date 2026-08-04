@@ -15,6 +15,15 @@ module.exports = {
     async execute(client, interaction) {
 
         // ---------------------------------------------------------
+        // ARCHIVO DE ESTADO DE POSTULACIONES
+        // ---------------------------------------------------------
+        const estadoPath = "./postulaciones_estado.json";
+        if (!fs.existsSync(estadoPath)) {
+            fs.writeFileSync(estadoPath, JSON.stringify({ abiertas: true }, null, 4));
+        }
+        let estado = JSON.parse(fs.readFileSync(estadoPath));
+
+        // ---------------------------------------------------------
         // SLASH COMMANDS
         // ---------------------------------------------------------
         if (interaction.isChatInputCommand()) {
@@ -33,12 +42,76 @@ module.exports = {
         }
 
         // ---------------------------------------------------------
+        // BOTONES PARA ABRIR / CERRAR POSTULACIONES
+        // ---------------------------------------------------------
+        if (interaction.isButton()) {
+
+            // CERRAR POSTULACIONES
+            if (interaction.customId === "cerrar_postulaciones") {
+                estado.abiertas = false;
+                fs.writeFileSync(estadoPath, JSON.stringify(estado, null, 4));
+
+                return interaction.reply({
+                    content: "🔒 Las postulaciones han sido **cerradas**.",
+                    ephemeral: true
+                });
+            }
+
+            // ABRIR POSTULACIONES
+            if (interaction.customId === "abrir_postulaciones") {
+                estado.abiertas = true;
+                fs.writeFileSync(estadoPath, JSON.stringify(estado, null, 4));
+
+                // BORRAR REGISTRO DE USUARIOS QUE YA POSTULARON
+                const registroPath = "./postulados.json";
+                if (fs.existsSync(registroPath)) fs.unlinkSync(registroPath);
+
+                return interaction.reply({
+                    content: "🔓 Las postulaciones han sido **abiertas**. Todos pueden postular de nuevo.",
+                    ephemeral: true
+                });
+            }
+        }
+
+        // ---------------------------------------------------------
         // BOTÓN PARA EMPEZAR POSTULACIÓN (MD)
         // ---------------------------------------------------------
         if (interaction.isButton() && interaction.customId.startsWith("postu_start_")) {
 
+            // Si las postulaciones están cerradas → bloquear
+            if (!estado.abiertas) {
+                return interaction.reply({
+                    content: "❌ Las postulaciones están cerradas actualmente.",
+                    ephemeral: true
+                });
+            }
+
             const rango = interaction.customId.split("_")[2];
 
+            // -------------------------------
+            // EVITAR QUE UN USUARIO POSTULE DOS VECES
+            // -------------------------------
+            const registroPath = "./postulados.json";
+            let registrados = [];
+
+            if (fs.existsSync(registroPath)) {
+                registrados = JSON.parse(fs.readFileSync(registroPath));
+            }
+
+            if (registrados.includes(interaction.user.id)) {
+                return interaction.reply({
+                    content: "❌ Ya has enviado una postulación. No puedes repetirla.",
+                    ephemeral: true
+                });
+            }
+
+            // Guardar usuario como ya postulado
+            registrados.push(interaction.user.id);
+            fs.writeFileSync(registroPath, JSON.stringify(registrados, null, 4));
+
+            // -------------------------------
+            // PREGUNTAS
+            // -------------------------------
             const preguntas = [
                 "1. ¿Cuál es tu nick de Discord?",
                 "2. ¿Cuál es tu nick de Minecraft?",
@@ -120,7 +193,6 @@ module.exports = {
                     preguntarSiguiente();
                 });
 
-                // Sin mensaje de tiempo agotado
                 collector.on("end", () => {});
             }
 
