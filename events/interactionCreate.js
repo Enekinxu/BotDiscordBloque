@@ -114,13 +114,6 @@ module.exports = {
                     preguntarSiguiente();
                 });
 
-                collector.on("end", (_, reason) => {
-                    if (reason !== "completado" && index <= preguntas.length) {
-                        dmChannel.send("⏳ Tiempo agotado. Vuelve a usar /postulacion.");
-                    }
-                });
-            }
-
             // Función final
             async function finalizarPostulacion() {
                 const data = JSON.parse(fs.readFileSync(archivo));
