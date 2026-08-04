@@ -1,7 +1,13 @@
 const fs = require("fs");
 const sistemaTickets = require("../tickets/system.js");
 const sorteos = require("../utils/sorteos.js");
-const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { 
+    EmbedBuilder, 
+    PermissionsBitField,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle
+} = require("discord.js");
 
 module.exports = {
     name: "interactionCreate",
@@ -114,15 +120,10 @@ module.exports = {
                     preguntarSiguiente();
                 });
 
-                collector.on("end", (_collected, reason) => {
-                    if (reason === "time") {
-                        if (fs.existsSync(archivo)) fs.unlinkSync(archivo);
-                        dmChannel.send(
-                            "⌛ Tu tiempo para responder se agotó. Vuelve a iniciar la postulación si deseas continuar."
-                        ).catch(() => null);
-                    }
-                });
+                // Sin mensaje de tiempo agotado
+                collector.on("end", () => {});
             }
+
             // Función final
             async function finalizarPostulacion() {
                 if (!fs.existsSync(archivo)) {
@@ -154,7 +155,23 @@ module.exports = {
                     return;
                 }
 
-                await canal.send({ embeds: [embedFinal] });
+                // BOTONES ACEPTAR / RECHAZAR
+                const botones = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`aceptar_${interaction.user.id}`)
+                        .setLabel("Aceptar")
+                        .setStyle(ButtonStyle.Success),
+
+                    new ButtonBuilder()
+                        .setCustomId(`rechazar_${interaction.user.id}`)
+                        .setLabel("Rechazar")
+                        .setStyle(ButtonStyle.Danger)
+                );
+
+                await canal.send({
+                    embeds: [embedFinal],
+                    components: [botones]
+                });
 
                 fs.unlinkSync(archivo);
 
@@ -164,6 +181,46 @@ module.exports = {
             // Iniciar preguntas
             preguntarSiguiente();
             return;
+        }
+
+        // ---------------------------------------------------------
+        // BOTONES ACEPTAR / RECHAZAR
+        // ---------------------------------------------------------
+        if (interaction.isButton()) {
+
+            // ACEPTAR
+            if (interaction.customId.startsWith("aceptar_")) {
+                const userId = interaction.customId.split("_")[1];
+
+                try {
+                    const usuario = await interaction.guild.members.fetch(userId);
+                    await usuario.send("📢 Tu postulación ha sido **aceptada**. ¡Bienvenido al equipo!");
+                } catch (err) {
+                    console.log("No se pudo enviar MD al usuario aceptado.");
+                }
+
+                return interaction.reply({
+                    content: "✔ Acción realizada.",
+                    ephemeral: true
+                });
+            }
+
+            // RECHAZAR
+            if (interaction.customId.startsWith("rechazar_")) {
+                const userId = interaction.customId.split("_")[1];
+
+                try {
+                    const usuario = await interaction.guild.members.fetch(userId);
+                    await usuario.send("📢 Tu postulación ha sido **rechazada**. Gracias por participar.");
+                } catch (err) {
+                    console.log("No se pudo enviar MD al usuario rechazado.");
+                }
+
+                return interaction.reply({
+                    content: "✔ Acción realizada.",
+                    ephemeral: true
+                });
+            }
         }
 
         // ---------------------------------------------------------
