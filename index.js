@@ -21,7 +21,7 @@ const client = new Client({
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.DirectMessages   // ← NECESARIO PARA RECIBIR MD
+        GatewayIntentBits.DirectMessages   // ← NECESARIO PARA MD
     ],
     partials: [
         Partials.Channel,   // ← NECESARIO PARA MD
@@ -63,6 +63,19 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(client, ...args));
     }
 }
+
+// ----------------------
+// FILTRO GLOBAL ULTRA‑EXTREMO
+// ----------------------
+const filtroGlobal = require("./messageFilter.js");
+
+client.on("messageCreate", async msg => {
+    try {
+        await filtroGlobal(msg);
+    } catch (err) {
+        console.error("Error en filtroGlobal:", err);
+    }
+});
 
 // ----------------------
 // API EXPRESS PARA DASHBOARD
@@ -136,7 +149,7 @@ app.listen(process.env.PORT || 3001, () =>
 // ----------------------
 // REGISTRO GLOBAL DE COMANDOS (v14)
 // ----------------------
-client.once("ready", async () => {   // ← ARREGLADO: ANTES TENÍAS "clientReady"
+client.once("ready", async () => {
     console.log(`Bot iniciado como ${client.user.tag}`);
 
     try {
