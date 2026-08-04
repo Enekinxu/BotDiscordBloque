@@ -1,5 +1,5 @@
 module.exports = {
-    name: "ready",
+    name: "ClientReady",
     once: true,
 
     async execute(client) {
