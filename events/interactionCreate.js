@@ -194,7 +194,7 @@ module.exports = {
 
                 try {
                     const usuario = await interaction.guild.members.fetch(userId);
-                    await usuario.send("📢 Tu postulación ha sido **aceptada**. ¡Bienvenido al equipo!");
+                    await usuario.send("📢 Tu postulación ha sido **aceptada**. ¡Bienvenido al staff!");
                 } catch (err) {
                     console.log("No se pudo enviar MD al usuario aceptado.");
                 }
