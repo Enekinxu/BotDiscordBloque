@@ -96,20 +96,24 @@ module.exports = {
                 time: 600000 // 10 min
             });
 
-            collector.on("collect", msg => {
+const collector = dmChannel.createMessageCollector({
+    filter: m => m.author.id === interaction.user.id,
+    time: 600000
+});
 
-                let data = JSON.parse(fs.readFileSync(archivo));
-                data[index] = msg.content;
-                fs.writeFileSync(archivo, JSON.stringify(data, null, 4));
+collector.on("collect", msg => {
+    let data = JSON.parse(fs.readFileSync(archivo));
+    data[index] = msg.content;
+    fs.writeFileSync(archivo, JSON.stringify(data, null, 4));
 
-                index++;
+    index++;
 
-                if (index <= preguntas.length) {
-                    dmChannel.send(`✏️ **Pregunta ${index}:**\n${preguntas[index - 1]}`);
-                } else {
-                    collector.stop("completado");
-                }
-            });
+    if (index <= preguntas.length) {
+        dmChannel.send(`✏️ **Pregunta ${index}:**\n${preguntas[index - 1]}`);
+    } else {
+        collector.stop("completado");
+    }
+});
 
             collector.on("end", async (_, reason) => {
 
