@@ -21,7 +21,7 @@ module.exports = {
                 console.error("Error ejecutando comando:", error);
                 return interaction.reply({
                     content: "❌ Ocurrió un error ejecutando el comando.",
-                    ephemeral: true
+                    flags: 64
                 });
             }
         }
@@ -71,13 +71,13 @@ module.exports = {
 
                 await interaction.reply({
                     content: "📬 Te he enviado un mensaje privado con todas las preguntas.",
-                    ephemeral: true
+                    flags: 64
                 });
 
             } catch (err) {
                 return interaction.reply({
                     content: "❌ No puedo enviarte MD. Activa tus mensajes privados.",
-                    ephemeral: true
+                    flags: 64
                 });
             }
 
@@ -163,8 +163,7 @@ module.exports = {
 
             if (interaction.customId === "reclamar_ticket") {
                 return interaction.reply({
-                    content: `🎟️ Ticket reclamado por ${interaction.user}.`,
-                    ephemeral: false
+                    content: `🎟️ Ticket reclamado por ${interaction.user}.`
                 });
             }
         }
@@ -180,18 +179,18 @@ module.exports = {
             if (interaction.customId === "participar") {
                 if (!dataSorteo.participantes.includes(interaction.user.id)) {
                     dataSorteo.participantes.push(interaction.user.id);
-                    return interaction.reply({ content: "🎉 Participación registrada.", ephemeral: true });
+                    return interaction.reply({ content: "🎉 Participación registrada.", flags: 64 });
                 }
-                return interaction.reply({ content: "Ya estás participando.", ephemeral: true });
+                return interaction.reply({ content: "Ya estás participando.", flags: 64 });
             }
 
             if (interaction.customId === "finalizar") {
                 if (!interaction.member.permissions.has("Administrator")) {
-                    return interaction.reply({ content: "❌ No tienes permisos.", ephemeral: true });
+                    return interaction.reply({ content: "❌ No tienes permisos.", flags: 64 });
                 }
 
                 await sorteos.finalizar(interaction.guild, interaction.message, dataSorteo);
-                return interaction.reply({ content: "Sorteo finalizado.", ephemeral: true });
+                return interaction.reply({ content: "Sorteo finalizado.", flags: 64 });
             }
         }
 
