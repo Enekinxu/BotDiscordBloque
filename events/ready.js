@@ -1,8 +1,9 @@
-module.exports = {
-    name: "ClientReady",
-    once: true,
+const { Events } = require('discord.js');
 
-    async execute(client) {
-        console.log(`Bot iniciado como ${client.user.tag}`);
-    }
+module.exports = {
+    name: Events.ClientReady,
+    once: true,
+    execute(client) {
+        console.log(`Bot listo como ${client.user.tag}`);
+    },
 };
